@@ -1,0 +1,48 @@
+<div class="row mt-3">
+  <div class="col d-flex justify-content-between align-items-center">
+    <div class="fs-1 fw-bold text-primary">Menu (${{ cartTotal$ | async | number:'1.2-2' }})</div>
+    <div>
+      <button type="button" class="btn btn-primary" [routerLink]="['confirm']" [disabled]="(itemCount$ |async) === 0">
+        Place Order <code>{{ itemCount$ | async }}</code>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- each row display a single menu item -->
+@if (menuItems$ | async; as items) {
+  @for ( i of items;let idx = $index; track idx){
+    <div class="row mb-2">
+      <div class="col">
+        <div class="menu-item">
+          <div>
+            <button type="button" class="btn btn-warning" (click)="deleteFromCart(i)">
+              <i class="bi bi-x-square"></i>
+            </button>
+          </div>
+          <div class="menu-details">
+            <div>Name: <span class="fw-bold"> {{i.name}}</span> </div>
+            <div>Description:
+              <span class="fst-italic">
+            {{i.description}}
+          </span>
+            </div>
+            <div>Price:<span class="fst-italic">{{i.price | currency: "$"}}</span></div>
+            <div></div>
+            @if (getItemQuantityInCart(i.id) > 0) {
+              <div class="text-danger fw-bold">Quantity: {{getItemQuantityInCart(i.id)}}</div>
+            }
+          </div>
+          <div class="menu-button-end">
+            <button type="button" class="btn btn-success" (click)="addToCart(i)">
+              <i class="bi bi-plus-circle"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <h2>No menu items found</h2>
+  }
+
+}
